@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Horario Kawaii 💖</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #ffeef7 0%, #ffe0ec 30%, #ffd1dc 70%, #ffb6c1 100%);
+            min-height: 100vh;
+            color: #8b4d6b;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 100vw;
+            margin: 0 auto;
+            padding: 0;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #ff69b4);
+            color: white;
+            padding: 20px 15px 30px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 8px 32px rgba(255, 20, 147, 0.3);
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="60" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="80" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="30" cy="85" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+            pointer-events: none;
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+        
+        .calendar-section {
+            background: white;
+            margin: -15px 0 0;
+            border-radius: 25px 25px 0 0;
+            min-height: calc(100vh - 140px);
+            padding: 25px 20px 20px;
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .month-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .month-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ff1493;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            border: none;
+            color: white;
+            font-size: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 20, 147, 0.3);
+        }
+        
+        .nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 20, 147, 0.4);
+        }
+        
+        .today-btn {
+            background: linear-gradient(135deg, #ffb6c1, #ffc0cb);
+            color: #8b4d6b;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .today-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.4);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-bottom: 20px;
+        }
+        
+        .day-header {
+            text-align: center;
+            padding: 12px 4px;
+            font-weight: 700;
+            color: #ff1493;
+            font-size: 0.8rem;
+            background: linear-gradient(135deg, #ffe0ec, #ffd1dc);
+            border-radius: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid transparent;
+        }
+        
+        .calendar-day:hover {
+            transform: scale(1.05);
+            background: rgba(255, 182, 193, 0.3);
+        }
+        
+        .calendar-day.other-month {
+            color: #ccc;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .calendar-day.current {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 20, 147, 0.4);
+            border: 2px solid white;
+        }
+        
+        .calendar-day.has-classes::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: #ff69b4;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .calendar-day.current.has-classes::after {
+            background: white;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.6; transform: translateX(-50%) scale(1.2); }
+        }
+        
+        .selected-date {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #ffe0ec, #ffd1dc);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(255, 105, 180, 0.2);
+        }
+        
+        .selected-date h3 {
+            font-size: 1.1rem;
+            color: #ff1493;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .classes-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(255, 182, 193, 0.2);
+        }
+        
+        .no-classes {
+            text-align: center;
+            padding: 40px 20px;
+            color: #8b4d6b;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .no-classes::before {
+            content: '🌸';
+            display: block;
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .class-item {
+            background: linear-gradient(135deg, #ffb6c1, #ffc0cb);
+            border-radius: 15px;
+            padding: 20px 15px;
+            margin-bottom: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .class-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 182, 193, 0.3);
+        }
+        
+        .class-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .class-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .class-time {
+            font-size: 0.85rem;
+            color: #8b4d6b;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+        
+        .class-name {
+            font-size: 1.1rem;
+            color: #8b4d6b;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .class-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .class-detail {
+            font-size: 0.9rem;
+            color: #8b4d6b;
+            font-weight: 600;
+        }
+        
+        .class-detail i {
+            margin-right: 5px;
+            font-size: 0.8rem;
+        }
+        
+        .support-message {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px dashed #ff69b4;
+            border-radius: 10px;
+            padding: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            color: #8b4d6b;
+            margin-top: 10px;
+            animation: messageGlow 2s infinite alternate;
+        }
+        
+        @keyframes messageGlow {
+            0% { background: rgba(255, 255, 255, 0.8); }
+            100% { background: rgba(255, 192, 203, 0.3); }
+        }
+        
+        .current-class {
+            background: linear-gradient(135deg, #ff69b4, #ff1493) !important;
+            color: white !important;
+            animation: currentGlow 2s infinite;
+            transform: scale(1.02);
+        }
+        
+        .current-class .class-time,
+        .current-class .class-name,
+        .current-class .class-detail {
+            color: white !important;
+        }
+        
+        .current-class .class-time {
+            background: rgba(255, 255, 255, 0.2) !important;
+        }
+        
+        .current-class::before {
+            content: '✨ EN CURSO ✨';
+            position: absolute;
+            top: -8px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #ff1493;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            animation: sparkle 1.5s infinite;
+        }
+        
+        .upcoming-class {
+            background: linear-gradient(135deg, #ffd700, #ffb347) !important;
+            animation: upcomingGlow 3s infinite;
+            transform: scale(1.01);
+        }
+        
+        .upcoming-class .class-time,
+        .upcoming-class .class-name,
+        .upcoming-class .class-detail {
+            color: #8b4513 !important;
+        }
+        
+        .upcoming-class::before {
+            content: '⏰ PRÓXIMA ⏰';
+            position: absolute;
+            top: -8px;
+            right: 10px;
+            background: rgba(139, 69, 19, 0.9);
+            color: #ffd700;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            animation: sparkle 1.5s infinite;
+        }
+        
+        @keyframes currentGlow {
+            0%, 100% { box-shadow: 0 8px 30px rgba(255, 20, 147, 0.4); }
+            50% { box-shadow: 0 12px 40px rgba(255, 20, 147, 0.6); }
+        }
+        
+        @keyframes upcomingGlow {
+            0%, 100% { box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4); }
+            50% { box-shadow: 0 12px 40px rgba(255, 215, 0, 0.6); }
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .heart {
+            position: absolute;
+            color: #ff69b4;
+            font-size: 20px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+        
+        .heart:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .heart:nth-child(2) { top: 30%; right: 15%; animation-delay: 1.5s; }
+        .heart:nth-child(3) { bottom: 40%; left: 20%; animation-delay: 3s; }
+        .heart:nth-child(4) { bottom: 60%; right: 10%; animation-delay: 4.5s; }
+        .heart:nth-child(5) { top: 60%; left: 5%; animation-delay: 6s; }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            padding: 10px 0 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item.active {
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+        
+        @media (max-width: 375px) {
+            .header {
+                padding: 15px 10px 25px;
+            }
+            
+            .header-title {
+                font-size: 1.5rem;
+            }
+            
+            .calendar-section {
+                padding: 20px 15px 100px;
+            }
+            
+            .month-title {
+                font-size: 1.1rem;
+            }
+            
+            .calendar-day {
+                font-size: 0.8rem;
+            }
+            
+            .class-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts">
+        <div class="heart">💕</div>
+        <div class="heart">🌸</div>
+        <div class="heart">💖</div>
+        <div class="heart">🎀</div>
+        <div class="heart">💗</div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="header-title">Horario Nini</h1>
+            <p class="header-subtitle">Mi calendario</p>
+        </div>
+
+        <div class="calendar-section">
+            <div class="month-nav">
+                <button class="nav-btn" onclick="previousMonth()">‹</button>
+                <h2 class="month-title" id="monthTitle">Agosto 2025</h2>
+                <button class="nav-btn" onclick="nextMonth()">›</button>
+            </div>
+            
+            <button class="today-btn" onclick="goToToday()">Hoy</button>
+
+            <div class="calendar-grid" id="calendarGrid">
+                <div class="day-header">L</div>
+                <div class="day-header">M</div>
+                <div class="day-header">M</div>
+                <div class="day-header">J</div>
+                <div class="day-header">V</div>
+                <div class="day-header">S</div>
+                <div class="day-header">D</div>
+            </div>
+
+            <div class="selected-date" id="selectedDate">
+                <h3>Lun, Ago. 4, 2025</h3>
+            </div>
+
+            <div class="classes-container" id="classesContainer">
+                <div class="no-classes">Sin Clases</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de horarios de clases con información completa
+        const clases = [
+            { 
+                dia: 'Lunes', 
+                horaInicio: '11:15', 
+                horaFin: '14:05',
+                nombre: 'PSICOLOGÍA DEL DESARROLLO II', 
+                profesor: 'Prof. María Romero', 
+                sala: 'PSI-174' 
+            },
+            { 
+                dia: 'Lunes', 
+                horaInicio: '14:56', 
+                horaFin: '17:05',
+                nombre: 'TALLER RELACIONES HUMANAS', 
+                profesor: 'Prof. Antonella Bradayanes', 
+                sala: 'PSI-177' 
+            },
+            { 
+                dia: 'Martes', 
+                horaInicio: '08:15', 
+                horaFin: '11:05',
+                nombre: 'PSICOBIOLOGÍA', 
+                profesor: 'Prof. NN ', 
+                sala: 'PSI-104' 
+            },
+            { 
+                dia: 'Martes', 
+                horaInicio: '11:15', 
+                horaFin: '13:25',
+                nombre: 'TEORÍAS PSICOANALÍTICAS ', 
+                profesor: 'Prof. Hurí Binimeus', 
+                sala: 'PSI-175' 
+            },
+            { 
+                dia: 'Miércoles', 
+                horaInicio: '09:45', 
+                horaFin: '11:05',
+                nombre: ' PENSAMIENTO MATEMÁTICO PARA CS.SOCIALES', 
+                profesor: 'Prof. NN', 
+                sala: 'MTM-113' 
+            },
+            { 
+                dia: 'Miércoles', 
+                horaInicio: '14:56', 
+                horaFin: '17:05',
+                nombre: ' TEORÍAS COGNITIVAS', 
+                profesor: 'Prof. Hector Araya', 
+                sala: 'PSI-176' 
+            },
+            { 
+                dia: 'Jueves', 
+                horaInicio: '14:30', 
+                horaFin: '14:05',
+                nombre: 'PENSAMIENTO MATEMÁTICO PARA CS.SOCIALES', 
+                profesor: 'Prof. Rojas', 
+                sala: 'MAT-113' 
+            },
+            { 
+                dia: 'Viernes', 
+                horaInicio: '09:45', 
+                horaFin: '11:05',
+                nombre: ' TÉCNICAS PARA HABLAR EN PÚBLICO', 
+                profesor: 'Prof. Ruth Espejo', 
+                sala: 'FGL-104' 
+            }
+        ];
+
+        const meses = [
+            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        ];
+
+        const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        const diasAbrev = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+        // Mensajes de apoyo
+        const mensajesApoyo = [
+            "¡Tú puedes! 💪✨ Vas a brillar en esta clase",
+            "¡Ánimo! 🌟 Cada clase es una oportunidad de aprender",
+            "¡Confía en ti! 💖 Tienes todo lo necesario para triunfar",
+            "¡Dale con todo! 🚀 Tu esfuerzo valdrá la pena",
+            "¡Sonríe! 😊 Aprender es una aventura maravillosa",
+            "¡Eres increíble! ⭐ Esta clase será genial",
+            "¡Fuerza! 💕 Cada paso te acerca a tus metas",
+            "¡Vamos! 🎯 Tu dedicación te llevará lejos"
+        ];
+
+        // Configurar zona horaria de Santiago, Chile
+        let fechaActual = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Santiago"}));
+        let mesActual = fechaActual.getMonth();
+        let añoActual = fechaActual.getFullYear();
+        let diaSeleccionado = fechaActual.getDate();
+
+        function obtenerHoraChile() {
+            return new Date(new Date().toLocaleString("en-US", {timeZone: "America/Santiago"}));
+        }
+
+        function goBack() {
+            console.log('Navegando hacia atrás...');
+        }
+
+        function previousMonth() {
+            mesActual--;
+            if (mesActual < 0) {
+                mesActual = 11;
+                añoActual--;
+            }
+            actualizarCalendario();
+        }
+
+        function nextMonth() {
+            mesActual++;
+            if (mesActual > 11) {
+                mesActual = 0;
+                añoActual++;
+            }
+            actualizarCalendario();
+        }
+
+        function goToToday() {
+            const hoy = obtenerHoraChile();
+            mesActual = hoy.getMonth();
+            añoActual = hoy.getFullYear();
+            diaSeleccionado = hoy.getDate();
+            actualizarCalendario();
+        }
+
+        function obtenerClasesDelDia(fecha) {
+            const diaNombre = diasSemana[fecha.getDay()];
+            return clases.filter(clase => clase.dia === diaNombre);
+        }
+
+        function parseHora(horaStr) {
+            const [horas, minutos] = horaStr.split(':').map(Number);
+            return horas * 60 + minutos;
+        }
+
+        function esClaseActual(clase, fechaClase) {
+            const ahora = obtenerHoraChile();
+            
+            // Solo verificar si es el día actual
+            if (fechaClase.toDateString() !== ahora.toDateString()) return false;
+            
+            const horaActualMinutos = ahora.getHours() * 60 + ahora.getMinutes();
+            const horaInicioMinutos = parseHora(clase.horaInicio);
+            const horaFinMinutos = parseHora(clase.horaFin);
+            
+            return horaActualMinutos >= horaInicioMinutos && horaActualMinutos < horaFinMinutos;
+        }
+
+        function esProximaClase(clase, fechaClase) {
+            const ahora = obtenerHoraChile();
+            
+            // Solo verificar si es el día actual
+            if (fechaClase.toDateString() !== ahora.toDateString()) return false;
+            
+            const horaActualMinutos = ahora.getHours() * 60 + ahora.getMinutes();
+            const horaInicioMinutos = parseHora(clase.horaInicio);
+            
+            // Considerar próxima si falta entre 0 y 30 minutos
+            const tiempoRestante = horaInicioMinutos - horaActualMinutos;
+            return tiempoRestante > 0 && tiempoRestante <= 30;
+        }
+
+        function obtenerMensajeApoyo() {
+            return mensajesApoyo[Math.floor(Math.random() * mensajesApoyo.length)];
+        }
+
+        function actualizarCalendario() {
+            // Actualizar título del mes
+            document.getElementById('monthTitle').textContent = `${meses[mesActual]} ${añoActual}`;
+
+            // Limpiar calendario
+            const grid = document.getElementById('calendarGrid');
+            const headers = grid.querySelectorAll('.day-header');
+            grid.innerHTML = '';
+            headers.forEach(header => grid.appendChild(header));
+
+            // Obtener primer día del mes
+            const primerDia = new Date(añoActual, mesActual, 1);
+            const ultimoDia = new Date(añoActual, mesActual + 1, 0);
+            const diasEnMes = ultimoDia.getDate();
+            const primerDiaSemana = primerDia.getDay();
+
+            // Ajustar para que lunes sea 0
+            const primerDiaAjustado = primerDiaSemana === 0 ? 6 : primerDiaSemana - 1;
+
+            // Días del mes anterior
+            const mesAnterior = new Date(añoActual, mesActual, 0);
+            const diasMesAnterior = mesAnterior.getDate();
+            
+            for (let i = primerDiaAjustado - 1; i >= 0; i--) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day other-month';
+                dayElement.textContent = diasMesAnterior - i;
+                grid.appendChild(dayElement);
+            }
+
+            // Días del mes actual
+            const hoy = obtenerHoraChile();
+            for (let dia = 1; dia <= diasEnMes; dia++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = dia;
+                
+                const fechaDia = new Date(añoActual, mesActual, dia);
+                const clasesDelDia = obtenerClasesDelDia(fechaDia);
+                
+                if (clasesDelDia.length > 0) {
+                    dayElement.classList.add('has-classes');
+                }
+
+                // Marcar día actual
+                if (añoActual === hoy.getFullYear() && 
+                    mesActual === hoy.getMonth() && 
+                    dia === hoy.getDate()) {
+                    dayElement.classList.add('current');
+                }
+
+                // Seleccionar día
+                dayElement.onclick = () => seleccionarDia(dia);
+                
+                if (dia === diaSeleccionado) {
+                    dayElement.style.background = 'linear-gradient(135deg, #ffb6c1, #ffc0cb)';
+                    dayElement.style.transform = 'scale(1.05)';
+                }
+
+                grid.appendChild(dayElement);
+            }
+
+            // Días del mes siguiente para completar la grilla
+            const diasMostrados = primerDiaAjustado + diasEnMes;
+            const diasRestantes = 42 - diasMostrados; // 6 semanas * 7 días
+            
+            for (let dia = 1; dia <= Math.min(diasRestantes, 14); dia++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day other-month';
+                dayElement.textContent = dia;
+                grid.appendChild(dayElement);
+            }
+
+            actualizarClasesDelDia();
+        }
+
+        function seleccionarDia(dia) {
+            diaSeleccionado = dia;
+            actualizarCalendario();
+        }
+
+        function actualizarClasesDelDia() {
+            const fechaSeleccionada = new Date(añoActual, mesActual, diaSeleccionado);
+            const diaTexto = fechaSeleccionada.toLocaleDateString('es-CL', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+
+            document.getElementById('selectedDate').innerHTML = `<h3>${diaTexto}</h3>`;
+
+            const clasesDelDia = obtenerClasesDelDia(fechaSeleccionada);
+            const container = document.getElementById('classesContainer');
+
+            if (clasesDelDia.length === 0) {
+                container.innerHTML = '<div class="no-classes">Sin Clases</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            clasesDelDia.forEach(clase => {
+                const classElement = document.createElement('div');
+                classElement.className = 'class-item';
+                
+                const esActual = esClaseActual(clase, fechaSeleccionada);
+                const esProxima = esProximaClase(clase, fechaSeleccionada);
+                
+                if (esActual) {
+                    classElement.classList.add('current-class');
+                } else if (esProxima) {
+                    classElement.classList.add('upcoming-class');
+                }
+
+                let mensajeHtml = '';
+                if (esActual || esProxima) {
+                    mensajeHtml = `<div class="support-message">${obtenerMensajeApoyo()}</div>`;
+                }
+
+                classElement.innerHTML = `
+                    <div class="class-header">
+                        <div class="class-time">${clase.horaInicio} - ${clase.horaFin}</div>
+                    </div>
+                    <div class="class-name">${clase.nombre}</div>
+                    <div class="class-info">
+                        <div class="class-detail">
+                            <i>👨‍🏫</i> ${clase.profesor}
+                        </div>
+                        <div class="class-detail">
+                            <i>📍</i> ${clase.sala}
+                        </div>
+                    </div>
+                    ${mensajeHtml}
+                `;
+                
+                container.appendChild(classElement);
+            });
+        }
+
+        // Inicializar
+        actualizarCalendario();
+
+        // Actualizar cada minuto para mantener los estados actuales
+        setInterval(actualizarCalendario, 60000);
+    </script>
+</body>
+</html>
